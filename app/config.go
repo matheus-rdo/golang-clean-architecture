@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"log"
@@ -9,7 +9,10 @@ import (
 
 // Environment variables
 type Environment struct {
-	APIPort string `env:"API_PORT" binding:"required"`
+	AwsEndpoint   string `env:"AWS_ENDPOINT"`
+	AwsRegion     string `env:"AWS_REGION" binding:"required"`
+	APIPort       string `env:"API_PORT" binding:"required"`
+	BookTableName string `env:"BOOK_TABLE_NAME" binding:"required"`
 }
 
 // ENV - output variable
