@@ -7,7 +7,7 @@ import (
 
 // Book book entity
 type Book struct {
-	ID        string    `json:"id"`
+	ID        string    `json:"bookId"`
 	Title     string    `json:"title" validate:"required"`
 	Content   string    `json:"content" validate:"required"`
 	Author    string    `json:"author"`

@@ -29,7 +29,7 @@ func (repository *bookRepository) Create(ctx context.Context, book domain.Book) 
 	book.CreatedAt = now
 	book.UpdatedAt = now
 
-	if _, err := repository.PutItemWithContext(ctx, book); err != nil {
+	if _, err := repository.PutItem(book); err != nil {
 		return nil, err
 	}
 

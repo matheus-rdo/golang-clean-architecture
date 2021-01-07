@@ -19,7 +19,7 @@ type Environment struct {
 var ENV Environment
 
 func init() {
-	gotenv.Load("../.env") // load .env file (if exists)
+	gotenv.Load() // load .env file (if exists)
 	if _, err := env.UnmarshalFromEnviron(&ENV); err != nil {
 		log.Fatal("Fatal error unmarshalling environment config: ", err)
 	}
