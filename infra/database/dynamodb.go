@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"log"
 	"sync"
 
@@ -41,6 +42,23 @@ func NewDynamoRepository(tableName string) DynamoRepository {
 
 // PutItem puts item on the database
 func (repository DynamoRepository) PutItem(item interface{}) (*dynamodb.PutItemOutput, error) {
+	input, err := repository.buildDynamoPutItemInput(item)
+	if err != nil {
+		return nil, err
+	}
+	return repository.Database.PutItem(input)
+}
+
+// PutItemWithContext puts item on the database with given context
+func (repository DynamoRepository) PutItemWithContext(context context.Context, item interface{}) (*dynamodb.PutItemOutput, error) {
+	input, err := repository.buildDynamoPutItemInput(item)
+	if err != nil {
+		return nil, err
+	}
+	return repository.Database.PutItemWithContext(context, input)
+}
+
+func (repository DynamoRepository) buildDynamoPutItemInput(item interface{}) (*dynamodb.PutItemInput, error) {
 	info, err := dynamodbattribute.MarshalMap(item)
 	if err != nil {
 		return nil, err
@@ -50,6 +68,5 @@ func (repository DynamoRepository) PutItem(item interface{}) (*dynamodb.PutItemO
 		Item:      info,
 		TableName: &repository.TableName,
 	}
-
-	return repository.Database.PutItem(input)
+	return input, nil
 }

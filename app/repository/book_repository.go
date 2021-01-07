@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -30,7 +29,7 @@ func (repository *bookRepository) Create(ctx context.Context, book domain.Book) 
 	book.CreatedAt = now
 	book.UpdatedAt = now
 
-	if _, err := repository.PutItem(book); err != nil {
+	if _, err := repository.PutItemWithContext(ctx, book); err != nil {
 		return nil, err
 	}
 
@@ -38,8 +37,19 @@ func (repository *bookRepository) Create(ctx context.Context, book domain.Book) 
 }
 
 func (repository *bookRepository) Fetch(ctx context.Context) (res *[]domain.Book, err error) {
-	//TODO: Impl
-	return nil, errors.New("Not yet implemented")
+	scanInput := dynamodb.ScanInput{
+		TableName: &repository.TableName,
+	}
+	result, err := repository.Database.ScanWithContext(ctx, &scanInput)
+	if err != nil {
+		return nil, err
+	}
+	var books []domain.Book
+	if err = dynamodbattribute.UnmarshalListOfMaps(result.Items, &books); err != nil {
+		return nil, err
+	}
+
+	return &books, nil
 }
 
 func (repository *bookRepository) GetByID(ctx context.Context, id string) (*domain.Book, error) {
@@ -51,7 +61,7 @@ func (repository *bookRepository) GetByID(ctx context.Context, id string) (*doma
 			},
 		},
 	}
-	result, err := repository.Database.GetItem(itemQuery)
+	result, err := repository.Database.GetItemWithContext(ctx, itemQuery)
 	if err != nil {
 		return nil, err
 	}
