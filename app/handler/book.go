@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/matheushr97/golang-clean-architecture/app/handler/presenter"
 	"github.com/matheushr97/golang-clean-architecture/domain"
-	"github.com/matheushr97/golang-clean-architecture/infra/web"
 )
 
 // BookHandler requests/responses handler
@@ -15,59 +14,43 @@ type BookHandler struct {
 }
 
 // NewBookHandler instantiates a new BookHandler
-func NewBookHandler(router web.Router, bookUseCase domain.BookUseCase) {
+func NewBookHandler(router *gin.RouterGroup, bookUseCase domain.BookUseCase) {
 	handler := BookHandler{
 		BookUseCase: bookUseCase,
 	}
 	router.GET("/books", handler.FetchBooks)
-	//router.GET("/books/:id", handler.GetBookByID)
 	router.POST("/books", handler.AddBook)
 }
 
 // FetchBooks will fetch all books
-func (handler *BookHandler) FetchBooks(response http.ResponseWriter, request *http.Request) {
-	response.Header().Set("Content-Type", "application/json")
+func (handler *BookHandler) FetchBooks(context *gin.Context) {
 	books, err := handler.BookUseCase.Fetch()
 	if err != nil {
-		response.WriteHeader(getStatusCode(err))
-		json.NewEncoder(response).Encode(buildResponseFromError(err))
+		context.AbortWithStatusJSON(getStatusCode(err), buildResponseFromError(err))
 		return
 	}
 	dtos := parseToDTOs(*books)
-	response.WriteHeader(http.StatusOK)
-	json.NewEncoder(response).Encode(dtos)
+	context.JSON(http.StatusOK, dtos)
+}
+
+// AddBook handles a add book request
+func (handler *BookHandler) AddBook(context *gin.Context) {
+	var entity domain.Book
+	if err := context.BindJSON(&entity); err != nil {
+		return // throws bad request
+	}
+	created, err := handler.BookUseCase.Create(entity)
+	if err != nil {
+		context.AbortWithStatusJSON(getStatusCode(err), buildResponseFromError(err))
+		return
+	}
+	dto := parseToDTO(*created)
+	context.SecureJSON(http.StatusCreated, dto)
 }
 
 // GetBookByID finds a book with given ID
 func (handler *BookHandler) GetBookByID(response http.ResponseWriter, request *http.Request) {
-	//TODO: Impl - does not have get url param
-}
-
-// AddBook handles a add book request
-func (handler *BookHandler) AddBook(response http.ResponseWriter, request *http.Request) {
-	response.Header().Set("Content-Type", "application/json")
-	var book domain.Book
-	err := json.NewDecoder(request.Body).Decode(&book)
-	if err != nil {
-		response.WriteHeader(getStatusCode(err))
-		json.NewEncoder(response).Encode(buildResponseFromError(err))
-		return
-	}
-	created, err := handler.BookUseCase.Create(book)
-	if err != nil {
-		response.WriteHeader(getStatusCode(err))
-		json.NewEncoder(response).Encode(buildResponseFromError(err))
-		return
-	}
-	bookDTO := presenter.Book{
-		ID:      created.ID,
-		Title:   created.Title,
-		Content: created.Content,
-		Author:  created.Author,
-	}
-	response.WriteHeader(http.StatusOK)
-	json.NewEncoder(response).Encode(bookDTO)
-
+	//TODO: Impl
 }
 
 func parseToDTOs(books []domain.Book) []presenter.Book {

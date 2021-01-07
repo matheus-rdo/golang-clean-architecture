@@ -8,8 +8,8 @@ import (
 // Book book entity
 type Book struct {
 	ID        string    `json:"bookId"`
-	Title     string    `json:"title" validate:"required"`
-	Content   string    `json:"content" validate:"required"`
+	Title     string    `json:"title" binding:"required"`
+	Content   string    `json:"content" binding:"required"`
 	Author    string    `json:"author"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
