@@ -19,9 +19,9 @@ func NewBookHandler(router web.Router, bookUseCase domain.BookUseCase) {
 	handler := BookHandler{
 		BookUseCase: bookUseCase,
 	}
-	router.GET("/books", handler.FetchBooks)
+	router.GET("/api/books", handler.FetchBooks)
 	//router.GET("/books/:id", handler.GetBookByID)
-	router.POST("/books", handler.AddBook)
+	router.POST("/api/books", handler.AddBook)
 }
 
 // FetchBooks will fetch all books
