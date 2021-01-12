@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go v1.36.22
 	github.com/gin-gonic/gin v1.6.3
 	github.com/google/uuid v1.1.4
-	github.com/gorilla/mux v1.8.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect

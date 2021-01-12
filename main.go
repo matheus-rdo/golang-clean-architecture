@@ -3,11 +3,11 @@ package main
 import (
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/matheushr97/golang-clean-architecture/app"
 	"github.com/matheushr97/golang-clean-architecture/app/handler"
 	"github.com/matheushr97/golang-clean-architecture/app/repository"
 	"github.com/matheushr97/golang-clean-architecture/app/usecase"
-	"github.com/matheushr97/golang-clean-architecture/infra/web"
 )
 
 func main() {
@@ -16,8 +16,9 @@ func main() {
 	bookUseCase := usecase.NewBookUseCase(bookRepository, time.Second*3)
 
 	// Application routes
-	router := web.NewGinRouter()
-	handler.NewBookHandler(router, bookUseCase)
+	engine := gin.New()
+	apiRouter := engine.Group("/api")
+	handler.NewBookHandler(apiRouter, bookUseCase)
 
-	router.SERVE(":" + app.ENV.APIPort)
+	engine.Run(":" + app.ENV.APIPort)
 }
