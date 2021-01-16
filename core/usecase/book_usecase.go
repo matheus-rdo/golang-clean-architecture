@@ -37,5 +37,13 @@ func (uc *bookUsecase) Fetch() (res *[]domain.Book, err error) {
 func (uc *bookUsecase) GetByID(id string) (*domain.Book, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), uc.contextTimeout)
 	defer cancel()
-	return uc.bookRepo.GetByID(ctx, id)
+	book, err := uc.bookRepo.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if book == nil {
+		return nil, domain.ErrNotFound
+	}
+
+	return book, nil
 }

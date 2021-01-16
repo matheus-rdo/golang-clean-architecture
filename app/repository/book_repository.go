@@ -65,6 +65,11 @@ func (repository *bookRepository) GetByID(ctx context.Context, id string) (*doma
 	if err != nil {
 		return nil, err
 	}
+
+	if result.Item == nil {
+		return nil, nil
+	}
+
 	var book domain.Book
 	if err = dynamodbattribute.UnmarshalMap(result.Item, &book); err != nil {
 		return nil, err

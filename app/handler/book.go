@@ -19,6 +19,7 @@ func NewBookHandler(router *gin.RouterGroup, bookUseCase domain.BookUseCase) {
 		BookUseCase: bookUseCase,
 	}
 	router.GET("/books", handler.FetchBooks)
+	router.GET("/books/:id", handler.FetchBookByID)
 	router.POST("/books", handler.AddBook)
 }
 
@@ -29,8 +30,17 @@ func (handler *BookHandler) FetchBooks(context *gin.Context) {
 		context.AbortWithStatusJSON(getStatusCode(err), buildResponseFromError(err))
 		return
 	}
-	dtos := parseToDTOs(*books)
-	context.JSON(http.StatusOK, dtos)
+	context.JSON(http.StatusOK, parseToDTOs(books))
+}
+
+// FetchBookByID finds a book with given ID
+func (handler *BookHandler) FetchBookByID(context *gin.Context) {
+	book, err := handler.BookUseCase.GetByID(context.Param("id"))
+	if err != nil {
+		context.AbortWithStatusJSON(getStatusCode(err), buildResponseFromError(err))
+		return
+	}
+	context.JSON(http.StatusOK, parseToDTO(book))
 }
 
 // AddBook handles a add book request
@@ -44,24 +54,18 @@ func (handler *BookHandler) AddBook(context *gin.Context) {
 		context.AbortWithStatusJSON(getStatusCode(err), buildResponseFromError(err))
 		return
 	}
-	dto := parseToDTO(*created)
-	context.SecureJSON(http.StatusCreated, dto)
+	context.SecureJSON(http.StatusCreated, parseToDTO(created))
 }
 
-// GetBookByID finds a book with given ID
-func (handler *BookHandler) GetBookByID(response http.ResponseWriter, request *http.Request) {
-	//TODO: Impl
-}
-
-func parseToDTOs(books []domain.Book) []presenter.Book {
-	dtos := make([]presenter.Book, len(books))
-	for _, book := range books {
-		dtos = append(dtos, parseToDTO(book))
+func parseToDTOs(books *[]domain.Book) []presenter.Book {
+	dtos := make([]presenter.Book, len(*books))
+	for _, book := range *books {
+		dtos = append(dtos, parseToDTO(&book))
 	}
 	return dtos
 }
 
-func parseToDTO(book domain.Book) presenter.Book {
+func parseToDTO(book *domain.Book) presenter.Book {
 	return presenter.Book{
 		ID:      book.ID,
 		Title:   book.Title,
