@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
 	"github.com/matheushr97/golang-clean-architecture/app"
-	"github.com/matheushr97/golang-clean-architecture/domain"
+	"github.com/matheushr97/golang-clean-architecture/core/domain"
 	"github.com/matheushr97/golang-clean-architecture/infra/database"
 )
 

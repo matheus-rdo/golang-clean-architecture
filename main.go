@@ -7,7 +7,7 @@ import (
 	"github.com/matheushr97/golang-clean-architecture/app"
 	"github.com/matheushr97/golang-clean-architecture/app/handler"
 	"github.com/matheushr97/golang-clean-architecture/app/repository"
-	"github.com/matheushr97/golang-clean-architecture/app/usecase"
+	"github.com/matheushr97/golang-clean-architecture/core/usecase"
 )
 
 func main() {

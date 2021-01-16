@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/matheushr97/golang-clean-architecture/domain"
+	"github.com/matheushr97/golang-clean-architecture/core/domain"
 )
 
 // ResponseError represent the reseponse error struct

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/matheushr97/golang-clean-architecture/app/handler/presenter"
-	"github.com/matheushr97/golang-clean-architecture/domain"
+	"github.com/matheushr97/golang-clean-architecture/core/domain"
 )
 
 // BookHandler requests/responses handler

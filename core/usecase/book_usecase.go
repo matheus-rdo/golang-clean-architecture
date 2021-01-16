@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/matheushr97/golang-clean-architecture/domain"
+	"github.com/matheushr97/golang-clean-architecture/core/domain"
 )
 
 type bookUsecase struct {
