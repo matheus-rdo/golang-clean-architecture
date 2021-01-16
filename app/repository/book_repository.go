@@ -77,3 +77,17 @@ func (repository *bookRepository) GetByID(ctx context.Context, id string) (*doma
 
 	return &book, nil
 }
+
+func (repository *bookRepository) Delete(ctx context.Context, id string) error {
+	input := &dynamodb.DeleteItemInput{
+		Key: map[string]*dynamodb.AttributeValue{
+			"bookId": {
+				S: &id,
+			},
+		},
+		TableName: &repository.TableName,
+	}
+
+	_, err := repository.Database.DeleteItem(input)
+	return err
+}

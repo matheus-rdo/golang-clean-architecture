@@ -47,3 +47,9 @@ func (uc *bookUsecase) GetByID(id string) (*domain.Book, error) {
 
 	return book, nil
 }
+
+func (uc *bookUsecase) Delete(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), uc.contextTimeout)
+	defer cancel()
+	return uc.bookRepo.Delete(ctx, id)
+}

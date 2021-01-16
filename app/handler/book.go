@@ -18,9 +18,10 @@ func NewBookHandler(router *gin.RouterGroup, bookUseCase domain.BookUseCase) {
 	handler := BookHandler{
 		BookUseCase: bookUseCase,
 	}
+	router.POST("/books", handler.AddBook)
 	router.GET("/books", handler.FetchBooks)
 	router.GET("/books/:id", handler.FetchBookByID)
-	router.POST("/books", handler.AddBook)
+	router.DELETE("/books/:id", handler.DeleteByID)
 }
 
 // FetchBooks will fetch all books
@@ -43,6 +44,16 @@ func (handler *BookHandler) FetchBookByID(context *gin.Context) {
 	context.JSON(http.StatusOK, parseToDTO(book))
 }
 
+// DeleteByID deletes a book with given ID
+func (handler *BookHandler) DeleteByID(context *gin.Context) {
+	err := handler.BookUseCase.Delete(context.Param("id"))
+	if err != nil {
+		context.AbortWithStatusJSON(getStatusCode(err), buildResponseFromError(err))
+		return
+	}
+	context.JSON(http.StatusOK, nil)
+}
+
 // AddBook handles a add book request
 func (handler *BookHandler) AddBook(context *gin.Context) {
 	var entity domain.Book
@@ -59,8 +70,8 @@ func (handler *BookHandler) AddBook(context *gin.Context) {
 
 func parseToDTOs(books *[]domain.Book) []presenter.Book {
 	dtos := make([]presenter.Book, len(*books))
-	for _, book := range *books {
-		dtos = append(dtos, parseToDTO(&book))
+	for i, book := range *books {
+		dtos[i] = parseToDTO(&book)
 	}
 	return dtos
 }
