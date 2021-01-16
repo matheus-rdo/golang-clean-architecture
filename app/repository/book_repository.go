@@ -2,11 +2,9 @@ package repository
 
 import (
 	"context"
-	"time"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/google/uuid"
 	"github.com/matheushr97/golang-clean-architecture/app"
 	"github.com/matheushr97/golang-clean-architecture/core/domain"
 	"github.com/matheushr97/golang-clean-architecture/infra/database"
@@ -24,11 +22,6 @@ func NewBookRepository() domain.BookRepository {
 }
 
 func (repository *bookRepository) Create(ctx context.Context, book domain.Book) (res *domain.Book, err error) {
-	now := time.Now()
-	book.ID = uuid.New().String()
-	book.CreatedAt = now
-	book.UpdatedAt = now
-
 	if _, err := repository.PutItem(book); err != nil {
 		return nil, err
 	}

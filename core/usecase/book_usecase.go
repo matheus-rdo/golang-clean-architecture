@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/matheushr97/golang-clean-architecture/core/domain"
 )
 
@@ -21,9 +22,17 @@ func NewBookUseCase(bookRepository domain.BookRepository, timeout time.Duration)
 }
 
 func (uc *bookUsecase) Create(book domain.Book) (res *domain.Book, err error) {
+	if err := book.Validate(); err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	book.ID = uuid.New().String()
+	book.CreatedAt = now
+	book.UpdatedAt = now
+
 	ctx, cancel := context.WithTimeout(context.Background(), uc.contextTimeout)
 	defer cancel()
-	// ALL BUSINESS RULES HERE
 
 	return uc.bookRepo.Create(ctx, book)
 }
@@ -51,5 +60,13 @@ func (uc *bookUsecase) GetByID(id string) (*domain.Book, error) {
 func (uc *bookUsecase) Delete(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), uc.contextTimeout)
 	defer cancel()
+	book, err := uc.bookRepo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	if book == nil {
+		return domain.ErrNotFound
+	}
+
 	return uc.bookRepo.Delete(ctx, id)
 }

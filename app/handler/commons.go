@@ -19,6 +19,8 @@ func getStatusCode(err error) int {
 	switch err {
 	case domain.ErrInternalServerError:
 		return http.StatusInternalServerError
+	case domain.ErrInvalidEntity:
+		return http.StatusUnprocessableEntity
 	case domain.ErrNotFound:
 		return http.StatusNotFound
 	case domain.ErrConflict:

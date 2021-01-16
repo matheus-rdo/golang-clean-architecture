@@ -6,6 +6,9 @@ var (
 	// ErrInternalServerError will throw if any the Internal Server Error happen
 	ErrInternalServerError = errors.New("Internal Server Error")
 
+	// ErrInvalidEntity will throw if entity is not valid
+	ErrInvalidEntity = errors.New("Invalid entity")
+
 	// ErrNotFound will throw if the requested item is not exists
 	ErrNotFound = errors.New("Your requested Item is not found")
 

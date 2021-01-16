@@ -15,6 +15,15 @@ type Book struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// Validate validate book
+func (book Book) Validate() error {
+	if book.Title == "" || book.Author == "" {
+		return ErrInvalidEntity
+	}
+
+	return nil
+}
+
 // BookUseCase repository to save book entity
 type BookUseCase interface {
 	Create(Book) (res *Book, err error)
