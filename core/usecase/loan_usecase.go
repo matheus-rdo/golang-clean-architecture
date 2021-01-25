@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/matheushr97/golang-clean-architecture/core/domain"
 )
 
@@ -48,7 +49,7 @@ func (uc loanUsecase) BorrowBook(loan domain.Loan) (*domain.Loan, error) {
 	if *hasLoan {
 		return nil, domain.ErrExistingLoan
 	}
-
+	loan.ID = uuid.New().String()
 	return uc.loanRepository.Create(loan)
 }
 
