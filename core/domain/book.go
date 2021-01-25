@@ -24,7 +24,7 @@ func (book Book) Validate() error {
 	return nil
 }
 
-// BookUseCase repository to save book entity
+// BookUseCase usecases to manage book entity
 type BookUseCase interface {
 	Create(Book) (res *Book, err error)
 	Fetch() (res *[]Book, err error)
